@@ -9,7 +9,7 @@ __main  FUNCTION
  
     VLDR.F32   s6, = 1
     VLDR.F32   S12, = 1          
-   MOV R11, #0; FOR SWITCHING BETWEEN LOGIC GATES 
+   MOV R11, #6; FOR SWITCHING BETWEEN LOGIC GATES 
    MOV R7,#0 ; INPUT X1
    MOV R8,#1 ; INPUT X2 
    MOV R9,#1; INPUT X3
@@ -36,10 +36,10 @@ LOGIC_OR  CMP R11, #1;
 
 LOGIC_NOT CMP R11, #2;
           BNE LOGIC_NAND;
-          MOV R2, #-3;
+          MOV R2, #-7;
           MOV R4, #2;
     	  MOV R5, #2;	  
-          MOV R6, #-6;
+          MOV R6, #2;
 		   B COMPUTE
 		  
 LOGIC_NAND CMP R11, #3;
@@ -61,8 +61,8 @@ LOGIC_NOR CMP R11, #4;
 LOGIC_XOR CMP R11, #6;
           BNE LOGIC_XNOR;
           MOV R2, #-5;
-          MOV R4, #2;
-    	  MOV R5, #1;	  
+          MOV R4, #20;
+    	  MOV R5, #10;	  
           MOV R6, #1;
 		   B COMPUTE	
 
@@ -79,9 +79,12 @@ COMPUTE   MUL R2,R2,R7;
 		  ADD R2,R2,R4;
 		  ADD R5,R5,R6;
 		  ADD R1,R2,R5;
-		  VMOV.F32 D0[1],R1;
-		  VMOV.F32 D1[0],R1;
-		  VMOV.F32 D2[1],R1;
+		  VMOV.F32 S1,R1;
+		  VMOV.F32 S2,R1;
+		  VMOV.F32 S5,R1;
+		  VCVT.F32.S32 S1,S1;
+		  VCVT.F32.S32 S2,S2;
+		  VCVT.F32.S32 S5,S5;
           B LOOP
 	
 LOOP CMP R3,R12
