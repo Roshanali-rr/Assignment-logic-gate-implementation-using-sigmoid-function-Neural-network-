@@ -1,18 +1,19 @@
- 	AREA     appcode, CODE, READONLY
+     AREA     factorial, CODE, READONLY
      EXPORT __main
-	 ENTRY 
-__main  FUNCTION		         
-   
-    VLDR.F32   s1, = -2
-    VLDR.F32   s2, = -2
-    VLDR.F32   s5, = -2
-    VLDR.F32   s6, = -2
+     IMPORT printMsg
+	 IMPORT printMsg2p
+	 IMPORT printMsg4p
+     ENTRY 
+__main  FUNCTION	
+
+ 
+    VLDR.F32   s6, = 1
     VLDR.F32   S12, = 1          
    MOV R11, #0; FOR SWITCHING BETWEEN LOGIC GATES 
-   MOV R7,#0 ; 
-   MOV R8,#1 ; 
-   MOV R9,#1; 
-   MOV R10,#1 ; 
+   MOV R7,#0 ; INPUT X1
+   MOV R8,#1 ; INPUT X2 
+   MOV R9,#1; INPUT X3
+   MOV R10,#1 ; BIAS 
    MOV R3,#100; N=100 FOR 10 iterations
    MOV R12,#0 ; r12 and S6 are used as a counter to count 100 iterations 
    
@@ -45,6 +46,8 @@ LOGIC_AND MOV R2, #-3;
 		  ADD R5,R5,R6;
 		  ADD R1,R2,R5;
 		  VMOV.F32 D0[1],R1;
+		  VMOV.F32 D1[0],R1;
+		  VMOV.F32 D2[1],R1;
           B LOOP
  
 LOGIC_OR MOV R2, #2;
@@ -59,6 +62,8 @@ LOGIC_OR MOV R2, #2;
 		  ADD R5,R5,R6;
 		  ADD R1,R2,R5;
 		  VMOV.F32 D0[1],R1;
+		  VMOV.F32 D1[0],R1;
+		  VMOV.F32 D2[1],R1;
           B LOOP
 
 LOGIC_NOT MOV R2, #-3;
@@ -73,6 +78,8 @@ LOGIC_NOT MOV R2, #-3;
 		  ADD R5,R5,R6;
 		  ADD R1,R2,R5;
 		  VMOV.F32 D0[1],R1;
+		  VMOV.F32 D1[0],R1;
+		  VMOV.F32 D2[1],R1;
           B LOOP
 		  
 LOGIC_NAND MOV R2, #-2;
@@ -87,6 +94,8 @@ LOGIC_NAND MOV R2, #-2;
 		  ADD R5,R5,R6;
 		  ADD R1,R2,R5;
 		  VMOV.F32 D0[1],R1;
+		  VMOV.F32 D1[0],R1;
+		  VMOV.F32 D2[1],R1;
           B LOOP
 
 LOGIC_NOR MOV R2, #-2;
@@ -101,11 +110,13 @@ LOGIC_NOR MOV R2, #-2;
 		  ADD R5,R5,R6;
 		  ADD R1,R2,R5;
 		  VMOV.F32 D0[1],R1;
+		  VMOV.F32 D1[0],R1;
+		  VMOV.F32 D2[1],R1;
           B LOOP
 		  
 LOGIC_XOR MOV R2, #-5;
-          MOV R4, #20;
-    	  MOV R5, #10;	  
+          MOV R4, #2;
+    	  MOV R5, #1;	  
           MOV R6, #1;
 		  MUL R2,R2,R7;
 		  MUL R4,R4,R8;
@@ -115,11 +126,13 @@ LOGIC_XOR MOV R2, #-5;
 		  ADD R5,R5,R6;
 		  ADD R1,R2,R5;
 		  VMOV.F32 D0[1],R1;
+		  VMOV.F32 D1[0],R1;
+		  VMOV.F32 D2[1],R1;
           B LOOP	
 
 LOGIC_XNOR MOV R2, #-5;
-          MOV R4, #20;
-    	  MOV R5, #10;	  
+          MOV R4, #2;
+    	  MOV R5, #1;	  
           MOV R6, #1;
 		  MUL R2,R2,R7;
 		  MUL R4,R4,R8;
@@ -129,7 +142,9 @@ LOGIC_XNOR MOV R2, #-5;
 		  ADD R5,R5,R6;
 		  ADD R1,R2,R5;
 		  VMOV.F32 D0[1],R1;
-          B LOOP		  
+		  VMOV.F32 D1[0],R1;
+		  VMOV.F32 D2[1],R1;
+          B LOOP	  
 	
 LOOP CMP R3,R12
      BGE LOOP1 ; till 100 iterations it will move to LOOP1 and after that it go to STOP
@@ -148,10 +163,12 @@ LOOP2 VADD.F32 S1,S1,S12;
       VADD.F32 S2,S1,S12;
 	  VDIV.F32 s1,s1,s2;
 	  VCVTR.U32.F32 S1,S1;
-	  VMOV.F32 R1,D0[1]
+	  VMOV.F32 R0,D0[1]
+	  BL printMsg
        B stop
       
 
 stop B stop 
    ENDFUNC
    END
+	  
