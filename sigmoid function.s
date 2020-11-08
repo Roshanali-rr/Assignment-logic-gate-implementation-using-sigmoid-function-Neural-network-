@@ -9,12 +9,12 @@ __main  FUNCTION
     VLDR.F32   s6, = 1	
     VLDR.F32   S12, = 1          
 
-   MOV R3,#4; N=4 FOR 5 iterations
+   MOV R3,#100; N=100 FOR 100 iterations
    MOV R5,#5;
    MOV R6,#0 ; r6 and s6 are used as a counter to count 100 iterations 
 	
 LOOP CMP R3,R6
-     BGE LOOP1 ; till 5 iterations it will move to LOOP1 and after that it go to STOP
+     BGE LOOP1 ; till 100 iterations it will move to LOOP1 and after that it go to STOP
      BLE LOOP2
 	 B stop
 	
