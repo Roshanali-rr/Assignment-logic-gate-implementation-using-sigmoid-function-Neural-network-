@@ -18,123 +18,61 @@ __main  FUNCTION
    MOV R12,#0 ; r12 and S6 are used as a counter to count 100 iterations 
    
 
-SWITCH   CMP R11, #0;
-         BEQ LOGIC_AND;
-		 CMP R11, #1;
-         BEQ LOGIC_OR;
-		 CMP R11, #2;
-         BEQ LOGIC_NAND;
-		 CMP R11, #3;
-         BEQ LOGIC_NOR;
-		 CMP R11, #4;
-         BEQ LOGIC_XOR;
-		 CMP R11, #5;
-         BEQ LOGIC_XNOR;
-		 CMP R11, #6;
-         BEQ LOGIC_NOT;
-        B stop
-
-LOGIC_AND MOV R2, #-3;
+LOGIC_AND CMP R11, #0;
+          BNE LOGIC_OR;
+          MOV R2, #-3;
           MOV R4, #2;
     	  MOV R5, #2;	  
           MOV R6, #-6;
-		  MUL R2,R2,R7;
-		  MUL R4,R4,R8;
-		  MUL R5,R5,R9;
-		  MUL R6,R6,R10;
-		  ADD R2,R2,R4;
-		  ADD R5,R5,R6;
-		  ADD R1,R2,R5;
-		  VMOV.F32 D0[1],R1;
-		  VMOV.F32 D1[0],R1;
-		  VMOV.F32 D2[1],R1;
-          B LOOP
- 
-LOGIC_OR MOV R2, #2;
+		   B COMPUTE
+		  
+LOGIC_OR  CMP R11, #1;
+          BNE LOGIC_NOT;
+          MOV R2, #2;
           MOV R4, #2;
     	  MOV R5, #2;	  
           MOV R6, #-1;
-		  MUL R2,R2,R7;
-		  MUL R4,R4,R8;
-		  MUL R5,R5,R9;
-		  MUL R6,R6,R10;
-		  ADD R2,R2,R4;
-		  ADD R5,R5,R6;
-		  ADD R1,R2,R5;
-		  VMOV.F32 D0[1],R1;
-		  VMOV.F32 D1[0],R1;
-		  VMOV.F32 D2[1],R1;
-          B LOOP
+		  B COMPUTE
 
-LOGIC_NOT MOV R2, #-3;
+LOGIC_NOT CMP R11, #2;
+          BNE LOGIC_NAND;
+          MOV R2, #-3;
           MOV R4, #2;
     	  MOV R5, #2;	  
           MOV R6, #-6;
-		  MUL R2,R2,R7;
-		  MUL R4,R4,R8;
-		  MUL R5,R5,R9;
-		  MUL R6,R6,R10;
-		  ADD R2,R2,R4;
-		  ADD R5,R5,R6;
-		  ADD R1,R2,R5;
-		  VMOV.F32 D0[1],R1;
-		  VMOV.F32 D1[0],R1;
-		  VMOV.F32 D2[1],R1;
-          B LOOP
+		   B COMPUTE
 		  
-LOGIC_NAND MOV R2, #-2;
+LOGIC_NAND CMP R11, #3;
+          BNE LOGIC_NOR; 
+          MOV R2, #-2;
           MOV R4, #-2;
     	  MOV R5, #-2;	  
           MOV R6, #5;
-		  MUL R2,R2,R7;
-		  MUL R4,R4,R8;
-		  MUL R5,R5,R9;
-		  MUL R6,R6,R10;
-		  ADD R2,R2,R4;
-		  ADD R5,R5,R6;
-		  ADD R1,R2,R5;
-		  VMOV.F32 D0[1],R1;
-		  VMOV.F32 D1[0],R1;
-		  VMOV.F32 D2[1],R1;
-          B LOOP
+		   B COMPUTE
 
-LOGIC_NOR MOV R2, #-2;
+LOGIC_NOR CMP R11, #4;
+          BNE LOGIC_XOR;
+          MOV R2, #-2;
           MOV R4, #-2;
     	  MOV R5, #-2;	  
           MOV R6, #1;
-		  MUL R2,R2,R7;
-		  MUL R4,R4,R8;
-		  MUL R5,R5,R9;
-		  MUL R6,R6,R10;
-		  ADD R2,R2,R4;
-		  ADD R5,R5,R6;
-		  ADD R1,R2,R5;
-		  VMOV.F32 D0[1],R1;
-		  VMOV.F32 D1[0],R1;
-		  VMOV.F32 D2[1],R1;
-          B LOOP
+		   B COMPUTE
 		  
-LOGIC_XOR MOV R2, #-5;
+LOGIC_XOR CMP R11, #6;
+          BNE LOGIC_XNOR;
+          MOV R2, #-5;
           MOV R4, #2;
     	  MOV R5, #1;	  
           MOV R6, #1;
-		  MUL R2,R2,R7;
-		  MUL R4,R4,R8;
-		  MUL R5,R5,R9;
-		  MUL R6,R6,R10;
-		  ADD R2,R2,R4;
-		  ADD R5,R5,R6;
-		  ADD R1,R2,R5;
-		  VMOV.F32 D0[1],R1;
-		  VMOV.F32 D1[0],R1;
-		  VMOV.F32 D2[1],R1;
-          B LOOP	
+		   B COMPUTE	
 
 LOGIC_XNOR MOV R2, #-5;
           MOV R4, #2;
     	  MOV R5, #1;	  
           MOV R6, #1;
-		  MUL R2,R2,R7;
+		  B COMPUTE
+
+COMPUTE   MUL R2,R2,R7;
 		  MUL R4,R4,R8;
 		  MUL R5,R5,R9;
 		  MUL R6,R6,R10;
@@ -144,7 +82,7 @@ LOGIC_XNOR MOV R2, #-5;
 		  VMOV.F32 D0[1],R1;
 		  VMOV.F32 D1[0],R1;
 		  VMOV.F32 D2[1],R1;
-          B LOOP	  
+          B LOOP
 	
 LOOP CMP R3,R12
      BGE LOOP1 ; till 100 iterations it will move to LOOP1 and after that it go to STOP
@@ -171,4 +109,5 @@ LOOP2 VADD.F32 S1,S1,S12;
 stop B stop 
    ENDFUNC
    END
-	  
+	   
+	
