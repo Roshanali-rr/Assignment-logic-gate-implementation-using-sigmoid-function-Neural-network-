@@ -5,112 +5,91 @@
 	 IMPORT printMsg4p
      ENTRY 
 __main  FUNCTION	
+   VLDR.F32   s1, = 90 ;x1
+    VLDR.F32   s2, = 5 ; t
+    VLDR.F32   s3, = 5 ;x
+    VLDR.F32   s6, = 2	;i
+    VLDR.F32   S4, = -1
+	VLDR.F32   s7, = 1 ; t FOR COS
+    VLDR.F32   s8, = 1 ; X FOR COS
+	VLDR.F32   S11, = -1;N
+    VLDR.F32   S12, = 2 ; 	
+ VADD.F32	s8,s8,s4; X=0 
+ VLDR.F32   s13, = 3.14 ;
+ VLDR.F32   s14, = 180 ;
+ VDIV.F32 s15,s13,s14; 
 
- 
-    VLDR.F32   s6, = 1
-    VLDR.F32   S12, = 1          
-   MOV R11, #1; FOR SWITCHING BETWEEN LOGIC GATES 
-   MOV R7,#0 ; INPUT X1
-   MOV R8,#1 ; INPUT X2 
-   MOV R9,#1; INPUT X3
-   MOV R10,#1 ; BIAS 
+	  
+   MOV R1,#0 ;THETA
+   MOV R4,#360;
    MOV R3,#100; N=100 FOR 100 iterations
-   MOV R12,#0 ; r12 and S6 are used as a counter to count 100 iterations 
+   MOV R5,#5;
+   MOV R6,#0 ; r6 and s6 are used as a counter to count 100 iterations 
+
+CIRCLE CMP R4,R1;
+       BLE C1;
+	   B stop
+	   
+C1  VMOV.F32 S1,R1;
+	VMOV.F32 S2,R1;
+	VMOV.F32 S3,R1;
+	VMOV.F32 S7,R1;
+	VMUL.F32 s1,s1,s15;
+    VMUL.F32 s3,s3,s15; 
+    VMUL.F32 s7,s7,s15; 
+     ADD R1,R1,#1;
+	B LOOPC  
    
-
-LOGIC_AND CMP R11, #0;
-          BNE LOGIC_OR;
-          MOV R2, #-3; r2,r4,r5,r6 are weights
-          MOV R4, #2;
-    	  MOV R5, #2;	  
-          MOV R6, #-6;
-		   B COMPUTE
-		  
-LOGIC_OR  CMP R11, #1;
-          BNE LOGIC_NOT;
-          MOV R2, #2;
-          MOV R4, #2;
-    	  MOV R5, #2;	  
-          MOV R6, #-1;
-		  B COMPUTE
-
-LOGIC_NOT CMP R11, #2;
-          BNE LOGIC_NAND;
-          MOV R2, #-7;
-          MOV R4, #2;
-    	  MOV R5, #2;	  
-          MOV R6, #2;
-		   B COMPUTE
-		  
-LOGIC_NAND CMP R11, #3;
-          BNE LOGIC_NOR; 
-          MOV R2, #-2;
-          MOV R4, #-2;
-    	  MOV R5, #-2;	  
-          MOV R6, #5;
-		   B COMPUTE
-
-LOGIC_NOR CMP R11, #4;
-          BNE LOGIC_XOR;
-          MOV R2, #-2;
-          MOV R4, #-2;
-    	  MOV R5, #-2;	  
-          MOV R6, #1;
-		   B COMPUTE
-		  
-LOGIC_XOR CMP R11, #5;
-          BNE LOGIC_XNOR;
-          MOV R2, #-5;
-          MOV R4, #20;
-    	  MOV R5, #10;	  
-          MOV R6, #1;
-		   B COMPUTE	
-
-LOGIC_XNOR CMP R11, #6;
-          BNE stop; 
-          MOV R2, #-5;
-          MOV R4, #20;
-    	  MOV R5, #10;	  
-          MOV R6, #1;
-	  B COMPUTE
-
-COMPUTE   MUL R2,R2,R7;
-		  MUL R4,R4,R8; w1*x1
-		  MUL R5,R5,R9; w2*x2
-		  MUL R6,R6,R10; w3*x3
-		  ADD R2,R2,R4;
-		  ADD R5,R5,R6;
-		  ADD R1,R2,R5; r1=z input to sigmoid fn
-		  VMOV.F32 S1,R1;
-		  VMOV.F32 S2,R1;
-		  VMOV.F32 S5,R1;
-		  VCVT.F32.S32 S1,S1; converting fp to integer
-		  VCVT.F32.S32 S2,S2;
-		  VCVT.F32.S32 S5,S5;
-          B LOOP
-	
-LOOP CMP R3,R12
-     BGE LOOP1 ; till 100 iterations it will move to LOOP1 and after that it go to STOP
-     BLE LOOP2
+LOOPC CMP R3,R6
+     BGE LOOPC1 ; till 100 iterations it will move to LOOP1 and after that it go to STOP
+	 BLE LOOPC2
 	 B stop
-	
-LOOP1 ADD R12,R12,#1; r12 and s6 are incremented after every iteration
-      VADD.F32	s6,s6,s12;
-      VMUL.F32 S5,S5,S2; 
-      VDIV.F32 s8,s5,s6;
-	  VADD.F32 S1,S1,S8;
-	  VDIV.F32 s5,s5,s6;
+
+LOOPC1 ADD R6,R6,#1; r6 and s6 are incremented after every iteration
+	  VADD.F32	s5,s6,s4;
+	  VMUL.F32 s7,s7,s1; t=t*x1
+	  VDIV.F32 s7,s7,s5; t/(i-1)
+	  VMUL.F32 s9,s7,s1; T*X1
+	  VDIV.F32 s9,s9,s6; T/I
+	  VMUL.F32 S9,s9,s11; T*N
+	  VADD.F32	s8,s9,s8; X=X+T*N
+	  VMUL.F32 S11,s11,s4;N=-n
+	  VMUL.F32 S7,s7,s1;t*x1
+	  VDIV.F32 s7,s7,s6; 
+	  VADD.F32	s6,s6,s12; i+2
+	  B LOOPC;   
+
+LOOPC2   VMUL.F32 S4,s4,s4;t*x1
+         VADD.F32 s8,s8,S4; X=1+X+T*N  
+		 VMUL.F32 S19,s18,s8;R*COS
+		 B LOOP;
+
+LOOP CMP R3,R6
+     BGE LOOP1 ; till 100 iterations it will move to LOOP1 and after that it go to STOP
+	 BLE LOOP2
+	 B stop
+
+LOOP1 ADD R6,R6,#1; r6 and s6 are incremented after every iteration
+      VADD.F32	s6,s6,s12; i+2
+	  VADD.F32	s5,s6,s4;
+	  VMUL.F32 s2,s2,s1; t=t*x1
+	  VDIV.F32 s2,s2,s5; t/(i-1)
+	  VMUL.F32 s9,s2,s1; T*X1
+	  VDIV.F32 s9,s9,s6; T/I
+	  VMUL.F32 S9,s9,s11; T*N
+	  VADD.F32	s3,s9,s3; X=X+T*N
+	  VMUL.F32 S11,s11,s4;N=-n
+	  VMUL.F32 S2,s2,s1;t*x1
+	  VDIV.F32 s2,s2,s6; 
 	  B LOOP;
-
-LOOP2 VADD.F32 S1,S1,S12;
-      VADD.F32 S2,S1,S12;
-	  VDIV.F32 s1,s1,s2;
-	  VCVTR.U32.F32 S1,S1;
+	  
+LOOP2 VMUL.F32 S20,s3,s18;R*SIN
+      VMOV.F32 S20,R0; Y
+      VMOV.F32 R0,D0[0]
+	  VMOV.F32 S19,R1; X
 	  VMOV.F32 R0,D0[1]
-	  BL printMsg
-       B stop
-      
-
+	  BL printMsg2p
+      B LOOP
 stop B stop 
    ENDFUNC
    END
